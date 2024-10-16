@@ -1,4 +1,4 @@
-# 无源蜂鸣器 示例代码
+# 有源蜂鸣器 示例代码
 
 from machine import Pin
 import time

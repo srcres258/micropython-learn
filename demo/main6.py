@@ -1,4 +1,4 @@
-# 有源蜂鸣器 示例代码
+# 无源蜂鸣器 示例代码
 
 from machine import Pin, PWM
 import time
