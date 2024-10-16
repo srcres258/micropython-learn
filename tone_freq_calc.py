@@ -13,15 +13,15 @@ def main():
     n = 2
     freqs = [base_freq * factor ** i for i in range(1, 12 * n + 1)]
     print("升音阶八度音（%d个）：" % n, freqs)
-    freqs_int = [int(f) for f in freqs]
-    print("取整后：", freqs_int)
+    freqs_int = [int(round(f, 0)) for f in freqs]
+    print("四舍五入取整后：", freqs_int)
 
     # 计算两个降音阶八度音中各音符的频率
     n = 2
     freqs = [base_freq / factor ** i for i in range(1, 12 * n + 1)]
     print("降音阶八度音（%d个）：" % n, freqs)
-    freqs_int = [int(f) for f in freqs]
-    print("取整后：", freqs_int)
+    freqs_int = [int(round(f, 0)) for f in freqs]
+    print("四舍五入取整后：", freqs_int)
 
 
 if __name__ == '__main__':
