@@ -1,3 +1,5 @@
+# 测试数码管的各管脚是否连通
+
 from machine import Pin, PWM
 import time
 

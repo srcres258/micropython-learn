@@ -1,3 +1,5 @@
+# MicroPython intro
+
 def main():
     print("Welcome to RT-Thread MicroPython!")
     

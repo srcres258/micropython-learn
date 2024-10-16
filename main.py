@@ -1,3 +1,5 @@
+# 点亮一颗LED灯
+
 import time
 from machine import Pin
 

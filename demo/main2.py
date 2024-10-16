@@ -1,3 +1,5 @@
+# 带数码管索引显示的呼吸灯
+
 from machine import Pin, PWM
 import time
 
