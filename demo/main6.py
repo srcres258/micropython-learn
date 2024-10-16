@@ -3,8 +3,8 @@
 from machine import Pin, PWM
 import time
 
-# 音符频率（C大调）
-C_FREQS = [262, 294, 330, 350, 393, 441, 495]
+# 音符频率（A大调）
+C_FREQS = [220, 233, 246, 261, 277, 293, 311, 329, 349, 369, 391, 415, 440, 466, 493, 523, 554, 587, 622, 659, 698, 739, 783, 830, 880]
 
 # 13引脚为音调频率输出口
 buzzer = PWM(Pin(13, Pin.OUT))
@@ -21,7 +21,7 @@ def main():
         for tone in C_FREQS:
             print("Playing tone: %d Hz" % tone)
             buzzer.freq(tone)
-            time.sleep_ms(500)
+            time.sleep_ms(250)
         power.value(0)
         buzzer.duty(0)
         print("--------------------")
