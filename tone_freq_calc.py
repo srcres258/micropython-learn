@@ -11,17 +11,23 @@ def main():
 
     # 计算两个升音阶八度音中各音符的频率
     n = 2
-    freqs = [base_freq * factor ** i for i in range(1, 12 * n + 1)]
-    print("升音阶八度音（%d个）：" % n, freqs)
-    freqs_int = [int(round(f, 0)) for f in freqs]
-    print("四舍五入取整后：", freqs_int)
+    freqs_h = [base_freq * factor ** i for i in range(1, 12 * n + 1)]
+    print("升音阶八度音（%d个）：" % n, freqs_h)
+    freqs_int_h = [int(round(f, 0)) for f in freqs_h]
+    print("四舍五入取整后：", freqs_int_h)
 
     # 计算两个降音阶八度音中各音符的频率
     n = 2
-    freqs = [base_freq / factor ** i for i in range(1, 12 * n + 1)]
-    print("降音阶八度音（%d个）：" % n, freqs)
-    freqs_int = [int(round(f, 0)) for f in freqs]
-    print("四舍五入取整后：", freqs_int)
+    freqs_l = [base_freq / factor ** i for i in range(1, 12 * n + 1)]
+    print("降音阶八度音（%d个）：" % n, freqs_l)
+    freqs_int_l = [int(round(f, 0)) for f in freqs_l]
+    print("四舍五入取整后：", freqs_int_l)
+
+    # 把降音阶八度音的频率和升音阶八度音的频率合并后输出
+    freqs_int = freqs_int_l
+    freqs_int.reverse()
+    freqs_int = freqs_int[:-1] + freqs_int_h
+    print("降音阶八度音与升音阶八度音合并后：", freqs_int)
 
 
 if __name__ == '__main__':
