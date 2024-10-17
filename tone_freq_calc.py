@@ -9,8 +9,8 @@ def main():
     # 十二平均律计算因子（2的12次方根），升音阶时乘以该因子，降音阶时除以该因子
     factor = 2.0 ** (1 / 12.0)
 
-    # 计算两个升音阶八度音中各音符的频率
-    n = 2
+    # 计算三个升音阶八度音中各音符的频率
+    n = 3
     freqs_h = [base_freq * factor ** i for i in range(1, 12 * n + 1)]
     print("升音阶八度音（%d个）：" % n, freqs_h)
     freqs_int_h = [int(round(f, 0)) for f in freqs_h]
@@ -26,7 +26,7 @@ def main():
     # 把降音阶八度音的频率和升音阶八度音的频率合并后输出
     freqs_int = freqs_int_l
     freqs_int.reverse()
-    freqs_int = freqs_int[:-1] + freqs_int_h
+    freqs_int = freqs_int + [int(round(base_freq, 0))] + freqs_int_h
     print("降音阶八度音与升音阶八度音合并后：", freqs_int)
 
 
