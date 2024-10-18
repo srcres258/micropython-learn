@@ -273,6 +273,13 @@ class Note:
         # 音符是否降半音。
         # 默认值：False
         self.half_low: bool = half_low
+    
+    def freq(self, base: str) -> int:
+        """
+        根据给定的音符与基大调，获取音符对应的频率。
+        """
+
+        return note_freq(self, base)
 
 
 class Music:
@@ -283,9 +290,10 @@ class Music:
     def __init__(
         self,
         name: str | None = None,
-        base: str = '',
+        base: str = 'C',
         speed: float = 1.0,
-        notes: list[Note] = []
+        notes: list[Note] = [],
+        unit_length: float = 0.5
     ):
         # 音乐的名称（可为None）。
         self.name: str | None = name
@@ -298,13 +306,90 @@ class Music:
 
         # 组成音乐的所有音符。
         self.notes: list[Note] = notes
+        
+        # 音符单位时长（一个四分音符的持续时长，单位为秒）
+        self.unit_length: float = unit_length
     
-    def load(music_code: str) -> bool:
+    def load(self, music_code: str) -> None:
         """
-        从给定的乐谱代码中加载音乐。若加载成功则返回True，否则返回False。
+        从给定的乐谱代码中加载音乐。
         """
 
-        return True
+        def finish_note(note: Note) -> None:
+            self.notes.append(note)
+
+        code = music_code.replace(' ', '')\
+            .replace('\t', '')\
+            .replace('\n', '')
+
+        note_ids = [str(i) for i in range(8)]
+
+        cur_note = None
+        temp_str = ''
+        decoding_base = False
+        decoding_speed = False
+        for code_c in code:
+            if decoding_base or decoding_speed:
+                if decoding_base and code_c == '=':
+                    self.base = temp_str
+                    temp_str = ''
+                    decoding_base = False
+                elif decoding_speed and code_c == '~':
+                    self.speed = float(temp_str)
+                    temp_str = ''
+                    decoding_speed = False
+                else:
+                    temp_str += code_c
+            elif cur_note is not None and code_c not in note_ids:
+                if code_c == 'b':
+                    cur_note.half_low = True
+                elif code_c == '#':
+                    cur_note.half_high = True
+                elif code_c == '/':
+                    cur_note.level -= 1
+                elif code_c == '^':
+                    cur_note.level += 1
+                elif code_c == '_':
+                    cur_note.length /= 2.0
+                elif code_c == '-':
+                    cur_note.length *= 2.0
+                elif code_c == '.':
+                    cur_note.length *= 1.5
+                else:
+                    raise NotImplementedError(
+                        "Unknown character met while "
+                        "decoding music (decoding a "
+                        f"note): {code_c}"
+                    )
+            else:
+                if code_c == '=':
+                    decoding_base = True
+                elif code_c == '~':
+                    decoding_speed = True
+                else:
+                    if code_c in note_ids:
+                        if cur_note is not None:
+                            finish_note(cur_note)
+                        cur_note = Note(int(code_c))
+                    else:
+                        raise NotImplementedError(
+                            "Unknown character met while "
+                            f"decoding music: {code_c}"
+                        )
+
+        if decoding_base and len(temp_str) > 0:
+            self.base = temp_str
+        if decoding_speed and len(temp_str) > 0:
+            self.speed = float(temp_str)
+        if cur_note is not None:
+            finish_note(cur_note)
+    
+    def note_freq(self, note: Note) -> int:
+        """
+        返回给定音符在该音乐基大调上的频率。
+        """
+
+        return note_freq(note, self.base)
 
 
 def base_freqs(base: str) -> list[int]:
@@ -313,21 +398,54 @@ def base_freqs(base: str) -> list[int]:
     """
 
     key = base
-    match base:
-        case 'Bb':
-            # 降B大调即为升A大调
-            key = 'A#'
-        case 'Db':
-            # 降D大调即为升C大调
-            key = 'C#'
-        case 'Eb':
-            # 降E大调即为升D大调
-            key = 'D#'
-        case 'Gb':
-            # 降G大调即为升F大调
-            key = 'F#'
-        case 'Ab':
-            # 降A大调即为升G大调
-            key = 'G#'
+    if base == 'Bb':
+        # 降B大调即为升A大调
+        key = 'A#'
+    elif base == 'Db':
+        # 降D大调即为升C大调
+        key = 'C#'
+    elif base == 'Eb':
+        # 降E大调即为升D大调
+        key = 'D#'
+    elif base == 'Gb':
+        # 降G大调即为升F大调
+        key = 'F#'
+    elif base == 'Ab':
+        # 降A大调即为升G大调
+        key = 'G#'
     
     return BASE_FREQS[key]
+
+
+def note_freq(note: Note, base: str) -> int:
+    """
+    根据给定的音符与基大调，获取音符对应的频率。
+    """
+    
+    if note.id == 0:
+        return 0
+
+    index_level = note.level + 2
+    base_index = index_level * 12
+    index_offset = 0
+    if note.id == 1:
+        index_offset = 0
+    elif note.id == 2:
+        index_offset = 2
+    elif note.id == 3:
+        index_offset = 4
+    elif note.id == 4:
+        index_offset = 5
+    elif note.id == 5:
+        index_offset = 7
+    elif note.id == 6:
+        index_offset = 9
+    elif note.id == 7:
+        index_offset = 11
+    if note.half_high:
+        index_offset += 1
+    if note.half_low:
+        index_offset -= 1
+    index = base_index + index_offset
+
+    return base_freqs(base)[index]
