@@ -59,7 +59,7 @@ def main():
     print(f"播放速度：{music.speed}")
     print(f"单位时长：{music.unit_length}")
     
-    print("开始演奏..." % (i + 1))
+    print("开始演奏...")
     play_music()
     print("演奏完毕！")
 
