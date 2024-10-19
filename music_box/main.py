@@ -59,13 +59,9 @@ def main():
     print(f"播放速度：{music.speed}")
     print(f"单位时长：{music.unit_length}")
     
-    interval = 5.0
-    i = 0
-    while True:
-        print("开始第%d次演奏..." % (i + 1))
-        play_music()
-        print("第%d次演奏完毕，暂停%.1f秒" % (i + 1, interval))
-        time.sleep(interval)
+    print("开始演奏..." % (i + 1))
+    play_music()
+    print("演奏完毕！")
 
 
 if __name__ == '__main__':
